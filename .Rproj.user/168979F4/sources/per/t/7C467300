@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1602707893659.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2695545795",
+    "id" : "7C467300",
+    "lastKnownWriteTime" : 1602693363,
+    "last_content_update" : 1602693363,
+    "path" : "~/Documents/R_workspace/EROSBIT/R/helper_functions.R",
+    "project_path" : "R/helper_functions.R",
+    "properties" : {
+        "cursorPosition" : "12,14",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
