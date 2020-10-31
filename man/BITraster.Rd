@@ -10,6 +10,7 @@
 \alias{.template_BIT}
 \alias{TemplateBIT,SpatialPolygonsDataFrame-method}
 \alias{TemplateBIT,RasterLayer-method}
+\alias{addLayer,BITraster-method}
 \alias{.subset_BIT_points}
 \alias{SubsetPoints,ANY,matrix-method}
 \alias{SubsetPoints,ANY,data.frame-method}
@@ -28,6 +29,8 @@
 \S4method{TemplateBIT}{SpatialPolygonsDataFrame}(template, dir, variables, years)
 
 \S4method{TemplateBIT}{RasterLayer}(template, dir, variables, years)
+
+\S4method{addLayer}{BITraster}(x, ...)
 
 .subset_BIT_points(BITraster, points, variables, years, parallel = FALSE)
 

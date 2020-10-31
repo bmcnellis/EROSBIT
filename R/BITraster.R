@@ -59,12 +59,26 @@ setValidity('BITraster', function(object) {
     msg <- paste0('invalid year range')
     errors <- c(errors, msg)
   }
-  if (!identical(raster::origin(object), raster::origin(EROSBIT::sample_BIT))) {
-    msg <- paste0('bad origin - should be 15, 15')
+
+  # check origins
+  orig1 <- raster::origin(object)
+  orig1 <- paste0(orig1[1], ', ', orig1[2])
+  orig2 <- raster::origin(EROSBIT::sample_BIT)
+  orig2 <- paste0(orig2[1], ', ', orig2[2])
+
+  if (!identical(orig1, orig2)) {
+    msg <- paste0('bad origin, got ', orig1, ' should be ', orig2)
     errors <- c(errors, msg)
   }
-  if (!identical(raster::res(object), raster::res(EROSBIT::sample_BIT))) {
-    msg <- paste0('bad resolution - should be 30, 30')
+
+  # check resolution
+  res1 <- raster::res(object)
+  res1 <- paste0(res1[1], ', ', res1[2])
+  res2 <- raster::res(EROSBIT::sample_BIT)
+  res2 <- paste0(res2[1], ', ', res2[2])
+
+  if (!identical(res1, res2)) {
+    msg <- paste0('bad resolution, got ', res1, ' should be ', res2)
     errors <- c(errors, msg)
   }
 
@@ -91,6 +105,7 @@ setValidity('BITraster', function(object) {
 setMethod('initialize',
           signature(.Object = 'BITraster'),
           function (.Object, ...) {
+            require(raster)
             params <- list(...)
 
             if ('temp_directory' %in% names(params)) {
@@ -105,9 +120,14 @@ setMethod('initialize',
               .Object@data_directory <- getwd()
             }
 
-            # other defaults
+            # BITraster defaults
             .Object@crs <- EROSBIT::EROSBIT_CRS
             .Object@mask <- character()
+            # Raster* defaults
+            raster::res(.Object) <- raster::res(EROSBIT::sample_BIT)
+            raster::crs(.Object) <- raster::crs(EROSBIT::sample_BIT)
+            # origin MUST come last here, for some reason...
+            raster::origin(.Object) <- raster::origin(EROSBIT::sample_BIT)
 
             # returns
             .Object <- callNextMethod()
@@ -138,10 +158,11 @@ setAs('RasterStack', 'BITraster', def = function(from) {
   require(raster)
 
   raster::values(mask) <- ifelse(is.na(raster::values(mask)), NA, 1)
+  mask <- raster::resample(mask, BITraster, 'ngb')
   raster::writeRaster(x = mask, filename = filename, format = 'GTiff', overwrite = T)
 
   BITraster@mask <- filename
-  stopifnot(CheckMaskValidity(BITraster), validObject(BITraster))
+  stopifnot(EROSBIT::CheckMaskValidity(BITraster), validObject(BITraster))
   return(BITraster)
 
 }
@@ -175,7 +196,7 @@ setMethod('MakeMask',
 #' @rdname BITraster
 #' @export
 .template_BIT <- function(template, dir, variables, years) {
-  require(raster)
+  require(raster) # implicit
 
   # Input checks:
   stopifnot(
@@ -187,10 +208,16 @@ setMethod('MakeMask',
     inherits(template, 'RasterLayer')
   )
 
-  # Shift origin to the 15, 15 in EROSBIT
-  raster::values(template) <- NA
-  s0 <- origin(EROSBIT::sample_BIT) - origin(template)
-  template <- raster::shift(template, dx = s0[1], dy = s0[2])
+  # Reset origin, pad the extent, and resample to new raster
+  blank_template <- template
+  values(blank_template) <- NA
+  s0 <- origin(EROSBIT::sample_BIT) - origin(blank_template)
+  blank_template <- shift(blank_template, dx = s0[1], dy = s0[2])
+  blank_template <- extend(blank_template, 35) # ca. 1km if res = 30, 30
+  m0 <- ifelse(template@data@isfactor, 'ngb', 'bilinear')
+  #attr0 <- template@data@attributes # preserve attributes
+  template <- resample(template, blank_template, m0)
+  #template@data@attributes <- attr0
 
   # Convert to BITraster and add meta-data
   out_BIT <- as(template, 'BITraster')
@@ -200,10 +227,7 @@ setMethod('MakeMask',
 
   # Output checks:
 
-  stopifnot(
-    identical(crs(out_BIT), crs(template)),
-    identical(bbox(out_BIT), bbox(template))
-  )
+  compareRaster(out_BIT, template, res = T, orig = T, stopiffalse = T)
 
   gc()
   return(out_BIT)
@@ -222,7 +246,7 @@ setMethod('TemplateBIT',
             # Conver SPDF to RasterLayer
 
             # convert CRS
-            template_new <- sp::spTransform(template, EROSBIT::EROSBIT_CRS)
+            template_new <- sp::spTransform(template, crs(EROSBIT::sample_BIT))
 
             # define target raster
             template_rast <- raster::raster(template_new)
@@ -249,6 +273,26 @@ setMethod('TemplateBIT',
               variables = variables,
               years = years
             )
+          })
+#' @rdname BITraster
+#' @export
+setMethod('addLayer',
+          signature(x = 'BITraster'),
+          function(x, ...) {
+            require(raster)
+            stopifnot(validObject(x))
+
+            y <- callNextMethod()
+            y <- as(y, 'BITraster')
+
+            y@variables <- x@variables
+            y@data_directory <- x@data_directory
+            y@temp_directory <- x@temp_directory
+            y@years <- x@years
+            y@mask <- x@mask
+
+            return(y)
+
           })
 #' @rdname BITraster
 #' @export

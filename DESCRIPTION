@@ -5,7 +5,6 @@ Version: 1.0.0
 Author: Brandon McNellis
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: R interface for exploring/utilizing USGS/NRCS Back-In-Time Landcover data
-Requires: R (>= 3.6.3)
 Imports: 
     raster (>= 3.3),
     sp (>= 1.4)
@@ -17,10 +16,11 @@ Collate:
     'generics.R'
     'BITraster.R'
     'GetBIT.R'
+    'analysis_functions.R'
     'data.R'
     'helper_functions.R'
 Depends: 
-    R (>= 2.10)
+    R (>= 3.6.3)
 Suggests: 
     knitr,
     rmarkdown
