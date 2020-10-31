@@ -5,16 +5,29 @@
 \alias{BITraster}
 \alias{BITraster-class}
 \alias{initialize,BITraster-method}
-\alias{ImportBIT}
+\alias{.make_mask}
+\alias{MakeMask,ANY,SpatialPolygonsDataFrame-method}
+\alias{.template_BIT}
+\alias{TemplateBIT,SpatialPolygonsDataFrame-method}
+\alias{TemplateBIT,RasterLayer-method}
 \alias{.subset_BIT_points}
 \alias{SubsetPoints,ANY,matrix-method}
 \alias{SubsetPoints,ANY,data.frame-method}
 \alias{SubsetPoints,ANY,SpatialPoints-method}
+\alias{SubsetPoints,ANY,SpatialPolygonsDataFrame-method}
 \title{S4 class for extending Raster* to EROS BIT dataset}
 \usage{
 \S4method{initialize}{BITraster}(.Object, ...)
 
-ImportBIT(dir, variables, years)
+.make_mask(BITraster, mask, filename)
+
+\S4method{MakeMask}{ANY,SpatialPolygonsDataFrame}(BITraster, mask, filename)
+
+.template_BIT(template, dir, variables, years)
+
+\S4method{TemplateBIT}{SpatialPolygonsDataFrame}(template, dir, variables, years)
+
+\S4method{TemplateBIT}{RasterLayer}(template, dir, variables, years)
 
 .subset_BIT_points(BITraster, points, variables, years, parallel = FALSE)
 
@@ -23,12 +36,16 @@ ImportBIT(dir, variables, years)
 \S4method{SubsetPoints}{ANY,data.frame}(BITraster, points, variables, years, parallel = FALSE)
 
 \S4method{SubsetPoints}{ANY,SpatialPoints}(BITraster, points, variables, years, parallel = FALSE)
+
+\S4method{SubsetPoints}{ANY,SpatialPolygonsDataFrame}(BITraster, points, variables, years, parallel = FALSE)
 }
 \description{
 NA
 }
 \details{
 NA
+
+`mask` must be a RasterLayer with the same extent and resolution as the BITraster
 }
 \section{Slots}{
 
@@ -40,6 +57,8 @@ NA
 \item{\code{temp_directory}}{Optional place to put temporary raster files (they get big)}
 
 \item{\code{years}}{Years of the analysis}
+
+\item{\code{character}}{Character vector with filepath to a mask. See details}
 }}
 
 \author{

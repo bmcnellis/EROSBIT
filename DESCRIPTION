@@ -6,7 +6,8 @@ Author: Brandon McNellis
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: R interface for exploring/utilizing USGS/NRCS Back-In-Time Landcover data
 Requires: R (>= 3.6.3)
-Imports: raster (>= 3.3),
+Imports: 
+    raster (>= 3.3),
     sp (>= 1.4)
 License: GPL-3
 Encoding: UTF-8
@@ -15,6 +16,7 @@ RoxygenNote: 7.1.1
 Collate: 
     'generics.R'
     'BITraster.R'
+    'GetBIT.R'
     'data.R'
     'helper_functions.R'
 Depends: 

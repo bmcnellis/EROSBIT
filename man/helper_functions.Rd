@@ -2,16 +2,25 @@
 % Please edit documentation in R/helper_functions.R
 \name{helper_functions}
 \alias{helper_functions}
+\alias{GetFilename}
 \alias{VarNames}
 \alias{AllYears}
+\alias{GetYearSuffix}
 \alias{matchResolution}
+\alias{CheckMaskValidity}
 \title{Miscellaneous supporting functions specific to this package}
 \usage{
+GetFilename(BITraster, var, year)
+
 VarNames()
 
 AllYears()
 
+GetYearSuffix(year)
+
 matchResolution(x, ref, method = "bilinear", filename = "", ...)
+
+CheckMaskValidity(BITraster)
 }
 \description{
 NA
