@@ -48,7 +48,7 @@ GetYearSuffix <- function(year) {
   } else if (year %in% c(1996:2006)) {
     return('1996_2006')
   } else if (year %in% c(2007:2018)) {
-    return('2007:2018')
+    return('2007_2018')
   } else {
     stop('bad year input, out of range of EROSBIT')
   }
