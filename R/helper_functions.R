@@ -118,12 +118,73 @@ CheckMaskValidity <- function(BITraster) {
 }
 #' @rdname helper_functions
 #' @export
-ForceMaskValidity <- function(BITraster) {
-  
+ExpandToMask <- function(BITraster) {
+
   require(raster)
-  require(sp)
-  
-  mask0 <- raster::raster(BITraster@mask)
-  
-  stop('probably implement this') 
+  require(rgdal)
+  stopifnot(validObject(BITraster))
+
+  n0 <- parallel::detectCores() - 1
+  s0 <- 'snow' %in% installed.packages()
+
+  if (n0 > 0 && s0) {
+    beginCluster(n0)
+  }
+
+  # Load the mask raster
+  mask00 <- raster(BITraster@mask)
+
+  # Reproject mask raster to BITraster CRS
+  mask0 <- projectRaster(
+    mask00,
+    res = c(30, 30),
+    crs = crs(BITraster),
+    method = 'ngb'
+  )
+
+  # Shift mask raster origin
+  dxdy <- 15 - origin(mask0)
+  mask0 <- raster::shift(mask0, dxdy[1], dxdy[2])
+  res(mask0) <- round(res(mask0), 4)
+
+  # Convert mask to BITraster
+  expanded_BIT <- as(mask0, 'BITraster')
+  # fix resolution rounding - needs to happen AFTER coercion
+  res(expanded_BIT) <- round(res(expanded_BIT), 4)
+
+  if (validObject(expanded_BIT)) {
+    f1 <- tools::file_path_sans_ext(BITraster@mask)
+    f2 <- tools::file_ext(BITraster@mask)
+
+    new_mask_fname <- paste0(f1, '_extended.', f2)
+    if (f2 == 'tif') {
+      new_mask_format <- 'GTiff'
+    } else {
+      stop('dont know the mask file format')
+    }
+
+    writeRaster(mask0, filename = new_mask_fname, format = new_mask_format, overwrite = T)
+    expanded_BIT@mask <- new_mask_fname
+
+  } else {
+    stop('expanding function failed')
+  }
+
+  # Transfer other slots
+  expanded_BIT@variables <- BITraster@variables
+  expanded_BIT@data_directory <- BITraster@data_directory
+  expanded_BIT@temp_directory <- BITraster@temp_directory
+  expanded_BIT@years <- BITraster@years
+
+  stopifnot(
+    validObject(expanded_BIT),
+    CheckMaskValidity(expanded_BIT)
+  )
+
+  if (n0 > 0 && s0) {
+    endCluster()
+  }
+
+  return(expanded_BIT)
+
 }

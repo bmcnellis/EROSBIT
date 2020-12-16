@@ -8,6 +8,7 @@
 \alias{GetYearSuffix}
 \alias{matchResolution}
 \alias{CheckMaskValidity}
+\alias{ExpandToMask}
 \title{Miscellaneous supporting functions specific to this package}
 \usage{
 GetFilename(BITraster, var, year)
@@ -21,6 +22,8 @@ GetYearSuffix(year)
 matchResolution(x, ref, method = "bilinear", filename = "", ...)
 
 CheckMaskValidity(BITraster)
+
+ExpandToMask(BITraster)
 }
 \description{
 NA

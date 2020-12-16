@@ -1,7 +1,0 @@
-"0","#points <- EROSBIT::sample_point_df"
-"0","mask <- EROSBIT::sample_mask"
-"0","BIT <- as(EROSBIT::sample_BIT, 'BITraster')"
-"0","BIT@variables <- 'Annual_Herb'"
-"0","BIT@years <- 1985"
-"0","BIT@data_directory <- '/mnt/data/FDF_raw_data/MRLC'"
-"0","stopifnot(validObject(BIT))"

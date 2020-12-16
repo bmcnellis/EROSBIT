@@ -1,9 +1,0 @@
-"0","BIT_from_dataframe <- SubsetPoints(BIT, BIT_stratified, 'Annual_Herb', 1985, parallel = FALSE)
-"
-"1","Called from: "
-"1",".subset_BIT_points(BITraster = BITraster, points = points, variables = variables, 
-"
-"1","    years = years, parallel = parallel)
-"
-"0","plot(BITraster)"
-"0","plot(BITraster[[1]])"

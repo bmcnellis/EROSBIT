@@ -1,3 +1,0 @@
-"0","# BITraster inherits from RasterStack and raster-class methods work the same as with a Raster Stack/ Raster Layer"
-"0","BIT_masked <- raster::mask(BIT, mask, maskvalue = 0)"
-"0","# now only has annual herb > 15%"
