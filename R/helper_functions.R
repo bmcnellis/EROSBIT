@@ -116,3 +116,14 @@ CheckMaskValidity <- function(BITraster) {
 
   stop("failed to check mask validity")
 }
+#' @rdname helper_functions
+#' @export
+ForceMaskValidity <- function(BITraster) {
+  
+  require(raster)
+  require(sp)
+  
+  mask0 <- raster::raster(BITraster@mask)
+  
+  stop('probably implement this') 
+}
